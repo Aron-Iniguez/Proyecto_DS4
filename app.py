@@ -60,3 +60,66 @@ def logout():
     session.pop('user', None)
     flash('Has cerrado sesión', 'info')
     return redirect(url_for('index'))
+
+@app.route('/favorites')
+def favorites():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    users = load_users()
+    favs = users[session['user']]['favorites']
+    datos = data.cargar_datos()
+    revistas_fav = {t: datos[t] for t in favs if t in datos}
+    return render_template('favorites.html', revistas=revistas_fav)
+
+@app.route('/toggle_fav/<nombre>')
+def toggle_fav(nombre):
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    users = load_users()
+    favs = users[session['user']]['favorites']
+    if nombre in favs:
+        favs.remove(nombre)
+        flash(f'"{nombre}" eliminado de favoritos', 'warning')
+    else:
+        favs.append(nombre)
+        flash(f'"{nombre}" agregado a favoritos', 'success')
+    save_users(users)
+    return redirect(request.referrer or url_for('index'))
+
+@app.route('/areas')
+def areas():
+    base = data.cargar_base()
+    areas = sorted({a for rev in base.values() for a in rev.get('areas', [])})
+    return render_template('areas.html', areas=areas)
+
+@app.route('/areas/<area>')
+def area_detalle(area):
+    revistas = data.filtrar_por_area(area)
+    if not revistas:
+        abort(404)
+    return render_template('revistas.html', revistas=revistas, titulo=f"Área: {area}")
+
+@app.route('/catalogos')
+def catalogos():
+    base = data.cargar_base()
+    catalogos = sorted({c for rev in base.values() for c in rev.get('catalogos', [])})
+    return render_template('catalogos.html', catalogos=catalogos)
+
+@app.route('/catalogos/<cat>')
+def catalogo_detalle(cat):
+    revistas = data.filtrar_por_catalogo(cat)
+    if not revistas:
+        abort(404)
+    return render_template('revistas.html', revistas=revistas, titulo=f"Catálogo: {cat}")
+
+@app.route('/explorar')
+def explorar():
+    iniciales = sorted({t[0].upper() for t in data.cargar_base().keys()})
+    return render_template('explorar.html', iniciales=iniciales)
+
+@app.route('/explorar/<letra>')
+def explorar_letra(letra):
+    revistas = data.filtrar_por_inicial(letra)
+    if not revistas:
+        abort(404)
+    return render_template('revistas.html', revistas=revistas, titulo=f"Revistas que inician con '{letra.upper()}'")
