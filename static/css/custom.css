@@ -1,0 +1,106 @@
+﻿:root {
+  /* Variables de color Unison */
+  --unison-blue:  #1c3a8f;
+  --unison-red:   #e73133;
+  --unison-gold:  #e8b401;
+
+  /* Puedes añadir más variables si lo deseas */
+}
+
+/* Aplicación global de colores */
+body {
+  background-color: #f8f9fa;
+  color: #212529;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+/* Navbar */
+.bg-unison {
+  background-color: var(--unison-blue) !important;
+}
+
+/* Texto destacado */
+.text-unison {
+  color: var(--unison-blue) !important;
+}
+
+/* Botones principales */
+.btn-primary {
+  background-color: var(--unison-red);
+  border-color: var(--unison-red);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: darken(var(--unison-red), 7%);
+  border-color: darken(var(--unison-red), 7%);
+}
+
+/* Botones secundarios / outline */
+.btn-outline-primary {
+  color: var(--unison-red);
+  border-color: var(--unison-red);
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: var(--unison-red);
+  color: #fff;
+  border-color: var(--unison-red);
+}
+
+/* Badges de áreas y catálogos */
+.badge.bg-secondary {
+  background-color: var(--unison-blue);
+}
+.badge.bg-primary {
+  background-color: var(--unison-red);
+}
+
+/* Iconos y encabezados */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--unison-blue);
+}
+
+/* Bordes y tarjetas */
+.border {
+  border-color: var(--unison-gold) !important;
+}
+
+/* Paginación DataTables */
+.dataTables_wrapper .dataTables_paginate .pagination li.page-item.active .page-link {
+  background-color: var(--unison-red);
+  border-color: var(--unison-red);
+  color: #fff !important;
+}
+.dataTables_wrapper .dataTables_paginate .pagination li.page-item:not(.active) .page-link:hover {
+  background-color: rgba(231, 49, 51, 0.1);
+  border-color: var(--unison-red);
+}
+
+/* Logos (puedes ajustar si hace falta) */
+.logo-page {
+  height: 40px;
+  width: auto;
+}
+.logo-unison {
+  height: 50px;
+  width: auto;
+}
+
+/* Opcional: enlaces en footer y otros */
+a {
+  color: var(--unison-blue);
+}
+a:hover {
+  color: var(--unison-red);
+}
+
+/* Formularios (focus) */
+.form-control:focus {
+  border-color: var(--unison-blue);
+  box-shadow: 0 0 0 0.2rem rgba(28, 58, 143, 0.25);
+}
+
+/* Tabla stripe */
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(28, 58, 143, 0.05);
+}
