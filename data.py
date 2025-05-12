@@ -78,3 +78,54 @@ def get_scimago_info(titulo):
         with open(SCIMAGO_FILE, 'w', encoding='utf-8') as f:
             json.dump(datos, f, indent=2, ensure_ascii=False)
     return entry or {}
+def scrape_resurchify(titulo):
+    """
+    Scrapea datos de Resurchify para una revista específica.
+    """
+    url = f'https://www.resurchify.com/journals/{requests.utils.quote(titulo)}'
+    try:
+        res = requests.get(url, timeout=5)
+        res.raise_for_status()
+        soup = BeautifulSoup(res.text, 'html.parser')
+        rank = soup.select_one('.journal-rank')
+        category = soup.select_one('.journal-category')
+        return {
+            'res_rank': rank.text.strip() if rank else 'N/A',
+            'res_category': category.text.strip() if category else 'N/A',
+            'res_last_checked': datetime.now().isoformat()
+        }
+    except Exception:
+        return {
+            'res_rank': 'N/A',
+            'res_category': 'N/A',
+            'res_last_checked': datetime.now().isoformat()
+        }
+
+def get_resurchify_info(titulo):
+    """
+    Obtiene datos de Resurchify (sin caché persistente).
+    """
+    return scrape_resurchify(titulo)
+
+@lru_cache()
+def cargar_datos():
+    """
+    Carga solo la metadata base.
+    """
+    return cargar_base()
+
+def filtrar_por_area(area):
+    base = cargar_base()
+    return {t: v for t, v in base.items() if area in v.get('areas', [])}
+
+def filtrar_por_catalogo(catalogo):
+    base = cargar_base()
+    return {t: v for t, v in base.items() if catalogo in v.get('catalogos', [])}
+
+def filtrar_por_inicial(letra):
+    base = cargar_base()
+    return {t: v for t, v in base.items() if t.upper().startswith(letra.upper())}
+
+def buscar_texto(termino):
+    base = cargar_base()
+    return {t: v for t, v in base.items() if termino.lower() in t.lower()}
