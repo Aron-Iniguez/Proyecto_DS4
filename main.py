@@ -9,7 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-
+#Este main ya no se usa se dividio en app.py y data.py para mejor funcionamiento
 # Rutas de las carpetas
 base_path = 'datos'
 areas_path = os.path.join(base_path, 'csv', 'areas')
