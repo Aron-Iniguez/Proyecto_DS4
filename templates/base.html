@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Catálogo de Revistas - UNI SEARCH{% endblock %}</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- DataTables Bootstrap5 CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-unison py-2">
+  <div class="container-fluid">
+    <!-- Logo del sistema y nombre (izquierda) -->
+    <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+      <img src="{{ url_for('static', filename='img/logo_unisearch.png') }}" alt="UNI SEARCH" class="logo-page me-2">
+      <span class="fs-4 fw-bold">UNI SEARCH</span>
+    </a>
+
+    <!-- Botón hamburguesa -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('areas') }}">Áreas</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('catalogos') }}">Catálogos</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('explorar') }}">Explorar</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('busqueda') }}">Búsqueda</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('creditos') }}">Créditos</a></li>
+        {% if session.user %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('favorites') }}">Mis Favoritos</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Registro</a></li>
+        {% endif %}
+      </ul>
+
+      <!-- Formulario de búsqueda -->
+      <form class="d-flex me-3" action="{{ url_for('busqueda') }}" method="get">
+        <input class="form-control me-2" type="search" name="q" placeholder="Buscar..." aria-label="Buscar">
+        <button class="btn btn-light" type="submit">Buscar</button>
+      </form>
+
+      <!-- Logo Universidad (derecha) -->
+      <a href="https://www.unison.mx" target="_blank">
+        <img src="{{ url_for('static', filename='img/logo_unison.png') }}" alt="Unison" class="logo-unison">
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="container my-4">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- Bootstrap JS Bundle (Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery and DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+{% block scripts %}
+<script>
+  // Configuración global de DataTables con Bootstrap renderer
+  $.extend(true, $.fn.dataTable.defaults, {
+    pagingType: "full_numbers",
+    pageLength: 10,
+    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+    dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+         "<'row'<'col-sm-12'tr>>" +
+         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+    renderer: 'bootstrap',
+    language: {
+      search: "Buscar:",
+      lengthMenu: "Mostrar _MENU_ entradas",
+      info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+      infoFiltered: "(filtrados de _MAX_ totales)",
+      paginate: {
+        first:    "« Primero",
+        previous: "Anterior",
+        next:     "Siguiente",
+        last:     "Último »"
+      }
+    }
+  });
+
+  $(document).ready(function() {
+    $('.datatable').DataTable();
+  });
+</script>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,17 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Mis Favoritos</h2>
+  <table class="table table-striped datatable">
+    <thead><tr><th>Título</th><th>H-Index</th></tr></thead>
+    <tbody>
+      {% for nombre, rev in revistas.items() %}
+      <tr>
+        <td><a href="{{ url_for('revista', nombre=nombre) }}">{{ nombre }}</a></td>
+        <td>{{ rev.h_index if rev.h_index!='N/A' else '–' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

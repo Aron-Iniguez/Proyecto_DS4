@@ -1,0 +1,68 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-3 text-capitalize">{{ nombre }}</h2>
+
+  {# Botón favorito #}
+  {% if session.user %}
+    {% if is_fav %}
+      <a href="{{ url_for('toggle_fav', nombre=nombre) }}" class="btn btn-outline-danger mb-3">
+        💔 Quitar Favorito
+      </a>
+    {% else %}
+      <a href="{{ url_for('toggle_fav', nombre=nombre) }}" class="btn btn-outline-success mb-3">
+        ❤️ Guardar Favorito
+      </a>
+    {% endif %}
+  {% else %}
+    <a href="{{ url_for('login') }}" class="btn btn-outline-primary mb-3">
+      🔐 Inicia sesión para guardar favoritos
+    </a>
+  {% endif %}
+
+  <ul class="list-unstyled">
+    <li><strong>Título:</strong> {{ nombre }}</li>
+    <li><strong>Áreas:</strong>
+      {% if revista.areas %}
+        {{ revista.areas | join(', ') }}
+      {% else %}
+        N/A
+      {% endif %}
+    </li>
+    <li><strong>Catálogos:</strong>
+      {% if revista.catalogos %}
+        {{ revista.catalogos | join(', ') }}
+      {% else %}
+        N/A
+      {% endif %}
+    </li>
+    <li><strong>H-Index:</strong> {{ revista.h_index if revista.h_index and revista.h_index!='N/A' else 'N/A' }}</li>
+    <li><strong>ISSN:</strong> {{ revista.issn if revista.issn and revista.issn!='N/A' else 'N/A' }}</li>
+    <li><strong>Publisher:</strong> {{ revista.publisher if revista.publisher and revista.publisher!='N/A' else 'N/A' }}</li>
+    <li><strong>Tipo de publicación:</strong> {{ revista.publication_type if revista.publication_type and revista.publication_type!='N/A' else 'N/A' }}</li>
+    <li><strong>Sitio web:</strong>
+      {% if revista.website and revista.website!='N/A' %}
+        <a href="{{ revista.website }}" target="_blank">{{ revista.website }}</a>
+      {% else %}
+        N/A
+      {% endif %}
+    </li>
+    <li><strong>Última visita a Scimago:</strong>
+      {{ revista.ultima_visita[:10] if revista.ultima_visita else 'N/A' }}
+    </li>
+    <li><strong>Rank Resurchify:</strong> {{ revista.res_rank if revista.res_rank else 'N/A' }}</li>
+    <li><strong>Categoría Resurchify:</strong> {{ revista.res_category if revista.res_category else 'N/A' }}</li>
+    <li><strong>Última visita a Resurchify:</strong>
+      {{ revista.res_last_checked[:10] if revista.res_last_checked else 'N/A' }}
+    </li>
+  </ul>
+
+  {% if revista.widget %}
+    <div class="mt-3">
+      {{ revista.widget|safe }}
+    </div>
+  {% endif %}
+
+  <a href="{{ request.referrer or url_for('index') }}" class="btn btn-secondary mt-4">← Volver</a>
+</div>
+{% endblock %}

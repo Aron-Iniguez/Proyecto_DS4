@@ -1,0 +1,56 @@
+﻿{% extends 'base.html' %}
+{% block title %}Inicio - UNI SEARCH{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row align-items-center">
+    <!-- Texto de bienvenida -->
+    <div class="col-lg-7">
+      <h1 class="display-4 fw-bold">Bienvenido a <span class="text-unison">UNI SEARCH</span></h1>
+      <p class="lead mt-4">
+        Uni Search te ofrece un acceso centralizado para consultar, explorar y buscar revistas académicas
+        indexadas por áreas y catálogos; filtra fácilmente por métricas clave como índice H, cuartil y número
+        de citas, guarda tus publicaciones favoritas y personaliza alertas para recibir notificaciones sobre
+        nuevos eventos, conferencias y actualizaciones en tu disciplina.
+      </p>
+      <div class="mt-4">
+        <a href="{{ url_for('areas') }}" class="btn btn-primary btn-lg me-2">Explorar Áreas</a>
+        <a href="{{ url_for('catalogos') }}" class="btn btn-outline-primary btn-lg">Ver Catálogos</a>
+      </div>
+    </div>
+    <!-- Imagen o gráfico alusivo -->
+    <div class="col-lg-5 text-center">
+      <img src="{{ url_for('static', filename='img/hero_revistas.png') }}"
+           alt="Revistas Académicas"
+           class="img-fluid" style="max-height: 400px;">
+    </div>
+  </div>
+</div>
+
+<!-- Sección de características -->
+<div class="container mb-5">
+  <div class="row text-center">
+    <div class="col-md-4 mb-4">
+      <div class="p-4 border rounded h-100">
+        <i class="bi bi-search display-4 text-unison"></i>
+        <h5 class="mt-3">Búsqueda Avanzada</h5>
+        <p>Encuentra revistas por título, palabras clave o ISSN con filtros dinámicos.</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="p-4 border rounded h-100">
+        <i class="bi bi-bookmark-heart display-4 text-unison"></i>
+        <h5 class="mt-3">Favoritos</h5>
+        <p>Guarda tus publicaciones favoritas y accede a ellas desde tu perfil.</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="p-4 border rounded h-100">
+        <i class="bi bi-clock-history display-4 text-unison"></i>
+        <h5 class="mt-3">Actualizaciones</h5>
+        <p>Nueva informacion cada cierto tiempo de nuevas revistas o anteriores.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

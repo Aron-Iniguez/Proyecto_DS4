@@ -1,0 +1,58 @@
+﻿{% extends 'base.html' %}
+{% block title %}Catálogos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-3">Catálogos</h2>
+
+  {# 1) Listado de catálogos #}
+  {% if not catalogo_seleccionado %}
+    <ul class="list-group w-50">
+      {% for cat in catalogos %}
+        <li class="list-group-item">
+          <a href="{{ url_for('catalogo_detalle', cat=cat) }}">{{ cat }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+
+  {# 2) Tabla de revistas dentro del catálogo seleccionado #}
+  {% else %}
+    <h4 class="mt-4">Catálogo: {{ catalogo_seleccionado }}</h4>
+    <table id="tabla-catalogos" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>H-Index</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for nombre, rev in revistas.items() %}
+        <tr>
+          <td>
+            <a href="{{ url_for('revista', nombre=nombre) }}">{{ nombre }}</a>
+          </td>
+          <td>
+            {{ rev.h_index if rev.h_index and rev.h_index!='N/A' else '–' }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <script>
+      $(document).ready(function(){
+        $('#tabla-catalogos').DataTable({
+          language: {
+            search: "Buscar:",
+            paginate: {
+              next: "Siguiente",
+              previous: "Anterior"
+            },
+            info: "Mostrando _START_ a _END_ de _TOTAL_ revistas"
+          }
+        });
+      });
+    </script>
+  {% endif %}
+</div>
+{% endblock %}

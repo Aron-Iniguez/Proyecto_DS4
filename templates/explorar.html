@@ -1,0 +1,66 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-3">Explorar por Letra</h2>
+  <p>Haz clic en una letra:</p>
+
+  <div class="mb-4">
+    {% for letra in iniciales %}
+      <a href="{{ url_for('explorar_letra', letra=letra) }}" class="btn btn-outline-primary btn-sm mx-1">
+        {{ letra }}
+      </a>
+    {% endfor %}
+  </div>
+
+  {# Si llegaste aquí tras escoger una letra, habrá variable 'revistas' y 'titulo' #}
+  {% if revistas %}
+    <h4>{{ titulo }}</h4>
+    <table id="tabla-explorar" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>H-Index</th>
+          <th>Áreas</th>
+          <th>Catálogos</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for nombre, rev in revistas.items() %}
+        <tr>
+          <td>
+            <a href="{{ url_for('revista', nombre=nombre) }}">{{ nombre }}</a>
+          </td>
+          <td>{{ rev.h_index if rev.h_index and rev.h_index!='N/A' else '–' }}</td>
+          <td>
+            {% for a in rev.areas %}
+              <span class="badge bg-secondary">{{ a }}</span>
+            {% endfor %}
+          </td>
+          <td>
+            {% for c in rev.catalogos %}
+              <span class="badge bg-primary">{{ c }}</span>
+            {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <script>
+      $(document).ready(function(){
+        $('#tabla-explorar').DataTable({
+          language: {
+            search: "Buscar:",
+            paginate: {
+              next: "Siguiente",
+              previous: "Anterior"
+            },
+            info: "Mostrando _START_ a _END_ de _TOTAL_ registros"
+          }
+        });
+      });
+    </script>
+
+  {% endif %}
+</div>
+{% endblock %}

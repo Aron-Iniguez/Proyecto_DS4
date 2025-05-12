@@ -1,0 +1,39 @@
+﻿{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Búsqueda</h2>
+  <form method="get" action="/busqueda" class="mb-3">
+    <div class="input-group">
+      <input type="text" name="q" value="{{ termino }}" class="form-control" placeholder="Escribe el término...">
+      <button class="btn btn-primary" type="submit">Buscar</button>
+    </div>
+  </form>
+
+  {% if revistas %}
+    <table id="tabla-busqueda" class="table table-striped datatable">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Áreas</th>
+          <th>Catálogos</th>
+          <th>H-Index</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for nombre, datos in revistas.items() %}
+          <tr>
+            <td><a href="/revista/{{ nombre }}">{{ nombre }}</a></td>
+            <td>{{ datos.areas | join(', ') }}</td>
+            <td>{{ datos.catalogos | join(', ') }}</td>
+            <td>{{ datos['h-index'] or 'N/A' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No se encontraron resultados para "{{ termino }}".</p>
+  {% endif %}
+</div>
+
+{% endblock %}

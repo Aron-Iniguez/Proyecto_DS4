@@ -1,0 +1,18 @@
+﻿{% extends 'base.html' %}
+{% block title %}Áreas{% endblock %}
+{% block content %}
+<h1>Áreas</h1>
+<table id="tabla-areas" class="table">
+  <thead><tr><th>Área</th></tr></thead>
+  <tbody>
+    {% for area in areas %}
+    <tr>
+      <td><a href="/areas/{{ area }}">{{ area }}</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<script>
+  $(document).ready(function(){ $('#tabla-areas').DataTable(); });
+</script>
+{% endblock %}

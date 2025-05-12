@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>{{ titulo }}</h2>
+  {% if revistas %}
+    <table id="tabla-revistas" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>H-Index</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for nombre, datos in revistas.items() %}
+          <tr>
+            <td><a href="{{ url_for('revista', nombre=nombre) }}">{{ nombre }}</a></td>
+            <td>{{ datos.get('h-index', 'N/A') }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No hay revistas en esta categoría.</p>
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    $('#tabla-revistas').DataTable({
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
+      }
+    });
+  });
+</script>
+{% endblock %}

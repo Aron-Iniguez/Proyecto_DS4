@@ -1,0 +1,40 @@
+﻿{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Créditos</h2>
+  <p>Desarrollado por:</p>
+  <table id="tabla-creditos" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Foto</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for persona in integrantes %}
+      <tr>
+        <td>{{ persona.nombre }}</td>
+        <td>
+          {% if persona.foto %}
+            <img src="{{ url_for('static', filename=persona.foto) }}" alt="Foto {{ persona.nombre }}" class="img-thumbnail" style="max-width: 100px;">
+          {% else %}
+            <span>No disponible</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    $('#tabla-creditos').DataTable({
+      paging: false,
+      searching: false,
+      info: false
+    });
+  });
+</script>
+{% endblock %}
