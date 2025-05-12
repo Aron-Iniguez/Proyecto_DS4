@@ -123,3 +123,40 @@ def explorar_letra(letra):
     if not revistas:
         abort(404)
     return render_template('revistas.html', revistas=revistas, titulo=f"Revistas que inician con '{letra.upper()}'")
+
+@app.route('/busqueda')
+def busqueda():
+    termino = request.args.get('q','').strip()
+    revistas = data.buscar_texto(termino) if termino else {}
+    return render_template('busqueda.html', revistas=revistas, termino=termino)
+
+@app.route('/revista/<nombre>')
+def revista(nombre):
+    base = data.cargar_base()
+    info_base = base.get(nombre)
+    if not info_base:
+        abort(404)
+
+    info_scimago = data.get_scimago_info(nombre)
+    info = {**info_base, **info_scimago}
+
+    user = session.get('user')
+    is_fav = False
+    if user:
+        users = load_users()
+        is_fav = nombre in users.get(user, {}).get('favorites', [])
+
+    return render_template('revista.html', revista=info, nombre=nombre, is_fav=is_fav)
+
+@app.route('/creditos')
+def creditos():
+    integrantes = [
+        {"nombre":"Manuel Munguia Rubio","foto":"img1.jpg"},
+        {"nombre":"Aron Iñiguez Ruiz","foto":"img2.jpg"},
+        {"nombre":"Valeria Alejandra Jiménez Figueroa","foto":"img3.jpg"},
+        {"nombre":"Benjamin Isaac Rivera Tapia","foto":"img4.jpg"},
+    ]
+    return render_template('creditos.html', integrantes=integrantes)
+
+if _name_ == '_main_':
+    app.run(debug=True)
