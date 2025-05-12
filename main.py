@@ -1,6 +1,14 @@
 ﻿import os
 import csv
 import json
+import time
+import re
+import difflib
+import chardet
+import requests
+from bs4 import BeautifulSoup
+from datetime import datetime
+
 
 # Rutas de las carpetas
 base_path = 'datos'
@@ -9,44 +17,103 @@ catalogos_path = os.path.join(base_path, 'csv', 'catalogos')
 json_path = os.path.join(base_path, 'json')
 output_file = os.path.join(json_path, 'revistas.json')
 
+entrada_json = "datos/json/revistas.json" # entrada para el scrapper
+salida_json = "datos/json/revistas_scimagojr.json"
+
+#headers
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+}
 revistas = {}
 
-def procesar_csv(ruta, tipo):
-    for archivo in os.listdir(ruta):
-        if archivo.endswith(".csv"):
-            ruta_archivo = os.path.join(ruta, archivo)
 
-            # Obtener nombre de categoría limpio
-            nombre_archivo = os.path.splitext(archivo)[0].upper()
-            nombre_archivo = nombre_archivo.replace("RADGRIDEXPORT", "")
-            nombre_archivo = nombre_archivo.replace("_", " ").strip()
-            categoria = nombre_archivo.replace(" ", "_")
+if os.path.isfile(salida_json):
+    with open(salida_json, 'r', encoding='utf-8') as f:
+        catalogo_existente = json.load(f)
+else:
+    catalogo_existente = {}
 
-            # Leer archivo
-            with open(ruta_archivo, encoding="latin1") as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    titulo = row.get("TITULO:") or row.get("TÍTULO:")
-                    if not titulo:
-                        continue
-                    titulo = titulo.strip().lower()
+with open(entrada_json, 'r', encoding='utf-8') as f:
+    revistas = json.load(f)
 
-                    if titulo not in revistas:
-                        revistas[titulo] = {"areas": [], "catalogos": []}
+def buscar_en_scimago(nombre_revista):
+    try:
+        query = nombre_revista.replace(' ', '+')
+        url = f"https://www.scimagojr.com/journalsearch.php?q={query}"
 
-                    if tipo == "areas" and categoria not in revistas[titulo]["areas"]:
-                        revistas[titulo]["areas"].append(categoria)
-                    elif tipo == "catalogos" and categoria not in revistas[titulo]["catalogos"]:
-                        revistas[titulo]["catalogos"].append(categoria)
+        #print(f"Buscando: {url}")
+        r = requests.get(url, headers=headers, timeout=10)
+        soup = BeautifulSoup(r.text, "html.parser")
 
-procesar_csv(areas_path, "areas")
-procesar_csv(catalogos_path, "catalogos")
-os.makedirs(json_path, exist_ok=True)
-# guardamos el trip como json
-with open(output_file, 'w', encoding='utf-8') as f:
-    json.dump(revistas, f, indent=4, ensure_ascii=False)
+        # Buscar todos los <a> dentro del div de resultados
+        resultados = soup.select("div.search_results a")
+        revistas = []
 
-# Verificar que puede ser leído
-with open(output_file, 'r', encoding='utf-8') as f:
-    data = json.load(f)
-    print("Archivo JSON leído correctamente. Número de revistas:", len(data))
+        for res in resultados:
+            span = res.find("span", class_="jrnlname")
+            if span:
+                titulo = span.get_text(strip=True)
+                href = res.get("href")
+                revistas.append({"titulo": titulo, "href": href})
+
+        if not revistas:
+            print("No se encontraron resultados.")
+            return None
+
+        # Usar difflib para encontrar coincidencia más cercana
+        titulos = [rev["titulo"] for rev in revistas]
+        coincidencia = difflib.get_close_matches(nombre_revista.strip(), titulos, n=1, cutoff=0.6)
+
+        if not coincidencia:
+            print("No hay coincidencia cercana para:", nombre_revista)
+            return None
+
+        # Obtener href correspondiente
+        revista_match = next((rev for rev in revistas if rev["titulo"] == coincidencia[0]), None)
+        if not revista_match:
+            print("No se encontró el enlace asociado.")
+            return None
+
+        url_revista = "https://www.scimagojr.com/" + revista_match["href"]
+        #print(f"Enlace a revista: {url_revista}")
+        r = requests.get(url_revista, headers=headers, timeout=1)
+        soup_detalle = BeautifulSoup(r.text, "html.parser")
+
+        def extraer_info(label):
+            tag = soup_detalle.find(string=re.compile(label, re.IGNORECASE))
+            return tag.find_next().text.strip() if tag else None
+
+        info = {
+            "titulo": revista_match["titulo"],
+            "url": url_revista,
+            "fecha_consulta": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+            "H-Index": extraer_info("H index"),
+            "Subject Area and Category": extraer_info("Subject Area and Category"),
+            "Publisher": extraer_info("Publisher"),
+            "ISSN": extraer_info("ISSN"),
+            "Publication Type": extraer_info("Type"),
+            "Widget": None
+        }
+
+        iframe = soup_detalle.find("iframe")
+        if iframe and 'src' in iframe.attrs:
+            info["Widget"] = iframe['src']
+
+        return info
+
+    except Exception as e:
+        print("Error al buscar revista:", nombre_revista)
+        print(e)
+        return None
+
+for titulo in revistas:
+    if titulo in catalogo_existente:
+        print(f"{titulo} ya existe")
+        continue
+
+    datos = buscar_en_scimago(titulo)
+    if datos:
+        catalogo_existente[titulo] = datos
+        with open(salida_json, 'w', encoding='utf-8') as f:
+            json.dump(catalogo_existente, f, indent=4, ensure_ascii=False)
+    time.sleep(1)
