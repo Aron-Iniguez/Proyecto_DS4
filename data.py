@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # Directorio base y rutas
-BASE_DIR = os.path.dirname(os.path.abspath(_file_))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_FILE = os.path.join(BASE_DIR, 'datos', 'json', 'revistas.json')
 SCIMAGO_FILE = os.path.join(BASE_DIR, 'datos', 'json', 'revistas_scimagojr.json')
 RESURCH_FILE = os.path.join(BASE_DIR, 'datos', 'json', 'revistas_resurchify.json')
