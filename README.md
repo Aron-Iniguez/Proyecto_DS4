@@ -130,5 +130,4 @@ Créditos (/creditos): Tabla dinámica con fotos y nombres.
 Cache inteligente: Solo se re-scrapea lo necesario.
 Seguridad: Contraseñas hasheadas con Bcrypt; sesiones seguras.
 Versiones: Asegúrate de usar Python ≥ 3.10 y Flask ≥ 2.0.
-Asistente: Se utilizó ChatGPT para generar y revisar código, documentación y diseño.
-Presentacion de uso de la pagina: https://www.canva.com/design/DAGnM7AuBpU/rCeeVbvkgVkQhVXU1Z526w/edit?utm_content=DAGnM7AuBpU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+Asistente: Se utilizó ChatGPT para generacion de partes de codigo, diseño y estructura.
