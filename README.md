@@ -8,7 +8,7 @@ Equipo:
 - Benjamín Isaac Rivera Tapia  
 
 Asistente Digital: ChatGPT (OpenAI o4-mini)
-
+---
 Presentacion funcional del Proyecto: https://www.canva.com/design/DAGnM7AuBpU/rCeeVbvkgVkQhVXU1Z526w/edit?utm_content=DAGnM7AuBpU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 ---
 
