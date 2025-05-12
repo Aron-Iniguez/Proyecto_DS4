@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 import os, json
 import data
 
-app = Flask(_name_)
+app = Flask(__name__)
 app.secret_key = 'TU_SECRETO_SUPER_SEGURA'
 bcrypt = Bcrypt(app)
 
@@ -158,5 +158,5 @@ def creditos():
     ]
     return render_template('creditos.html', integrantes=integrantes)
 
-if _name_ == '_main_':
+if __name__ == '_main_':
     app.run(debug=True)
