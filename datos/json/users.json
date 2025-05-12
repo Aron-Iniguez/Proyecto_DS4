@@ -1,0 +1,25 @@
+{
+  "usuario1": {
+    "password_hash": "<hash>",
+    "favorites": [
+      "Acta Geophysica",
+      "Otra Revista"
+    ]
+  },
+  "usuario2": {
+    "password_hash": "<hash>",
+    "favorites": [
+      "Acta Geophysica",
+      "Otra Revista"
+    ]
+  },
+  "manuel": {
+    "password_hash": "$2b$12$FziALv00MRaYNIf5VG8MqeqYlO69HCaiYz7tJgRCxwwcON5T1.WnS",
+    "favorites": [
+      "acta agriculturae scandinavica - section a: animal science",
+      "acta botanica mexicana",
+      "3l: the southeast asian journal of english language studies",
+      "atenea: revista de ciencia, arte y literatura de la universidad de concepcion"
+    ]
+  }
+}

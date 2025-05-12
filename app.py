@@ -5,7 +5,7 @@ import os, json
 import data
 
 app = Flask(__name__)
-app.secret_key = 'TU_SECRETO_SUPER_SEGURA'
+app.secret_key = 'unisearch1'
 bcrypt = Bcrypt(app)
 
 # Archivo de usuarios
